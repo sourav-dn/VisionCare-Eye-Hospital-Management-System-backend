@@ -1,0 +1,28 @@
+name: 🚀 Deploy Backend to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🌐 SSH into VPS & Update Backend
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            set -e
+            echo "🚀 Deploying Backend..."
+            cd /home/sourav/eye-hospital/backend
+            git pull origin main
+            npm install --production
+            pm2 restart eye-hospital-api || pm2 start server.js --name "eye-hospital-api"
+            echo "✅ Backend deployed successfully!"
