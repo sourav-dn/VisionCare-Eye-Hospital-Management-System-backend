@@ -10,35 +10,35 @@
 ```
 backend/
 +-- config/
-�   +-- db.js                     # MongoDB connection (with DNS fallback)
+   +-- db.js                     # MongoDB connection (with DNS fallback)
 +-- controllers/
-�   +-- auth.controller.js        # Login, register, profile, password
-�   +-- admin.controller.js       # Departments, doctors, rooms, staff
-�   +-- patient.controller.js     # Patient CRUD + search
-�   +-- visit.controller.js       # Ticket lifecycle, consultation, prescription
-�   +-- analytics.controller.js  # Dashboard analytics for admin
+   +-- auth.controller.js        # Login, register, profile, password
+   +-- admin.controller.js       # Departments, doctors, rooms, staff
+   +-- patient.controller.js     # Patient CRUD + search
+   +-- visit.controller.js       # Ticket lifecycle, consultation, prescription
+   +-- analytics.controller.js  # Dashboard analytics for admin
 +-- middleware/
-�   +-- auth.middleware.js        # JWT protect guard
-�   +-- roleCheck.middleware.js   # Role-based access (admin/doctor/etc.)
-�   +-- errorHandler.middleware.js# Global error handler
+   +-- auth.middleware.js        # JWT protect guard
+   +-- roleCheck.middleware.js   # Role-based access (admin/doctor/etc.)
+   +-- errorHandler.middleware.js# Global error handler
 +-- models/
-�   +-- User.model.js             # Staff + patient accounts
-�   +-- Patient.model.js          # Patient profile (demographics)
-�   +-- Visit.model.js            # Ticket / visit record
-�   +-- Department.model.js       # Hospital departments
-�   +-- Room.model.js             # Consultation rooms
+   +-- User.model.js             # Staff + patient accounts
+   +-- Patient.model.js          # Patient profile (demographics)
+   +-- Visit.model.js            # Ticket / visit record
+   +-- Department.model.js       # Hospital departments
+   +-- Room.model.js             # Consultation rooms
 +-- routes/
-�   +-- auth.routes.js
-�   +-- admin.routes.js
-�   +-- patient.routes.js
-�   +-- visit.routes.js
-�   +-- analytics.routes.js
+   +-- auth.routes.js
+   +-- admin.routes.js
+   +-- patient.routes.js
+   +-- visit.routes.js
+   +-- analytics.routes.js
 +-- sockets/
-�   +-- socket.js                 # Socket.IO room management
+   +-- socket.js                 # Socket.IO room management
 +-- utils/
-�   +-- assignDoctor.js           # Auto doctor assignment algorithm
+   +-- assignDoctor.js           # Auto doctor assignment algorithm
 +-- uploads/
-�   +-- avatars/                  # User profile picture local storage
+   +-- avatars/                  # User profile picture local storage
 +-- seed.js                       # Database seeder (test data)
 +-- server.js                     # App entry point
 +-- .env                          # Environment variables
@@ -109,7 +109,7 @@ Authorization: Bearer <token>
 
 | Role | Description |
 |---|---|
-| `admin` | Full access � manages staff, rooms, departments, analytics |
+| `admin` | Full access  manages staff, rooms, departments, analytics |
 | `receptionist` | Creates tickets, manages queue, hands off prescriptions |
 | `doctor` | Views own queue, updates consultation notes, changes visit status |
 | `patient` | Books appointments, views own visit history |
@@ -128,7 +128,7 @@ Base URL: `http://localhost:5000/api`
 |--------|----------|--------|-------------|
 | `POST` | `/register-patient` | Public | Patient self-registration |
 | `POST` | `/register-staff` | Admin | Create doctor/receptionist/admin account |
-| `POST` | `/login` | Public | Login for all roles � returns JWT |
+| `POST` | `/login` | Public | Login for all roles  returns JWT |
 | `GET`  | `/me` | Protected | Get current logged-in user |
 | `PUT`  | `/profile` | Protected | Update name, phone, avatar |
 | `PUT`  | `/change-password` | Protected | Change own password |
@@ -146,7 +146,7 @@ Base URL: `http://localhost:5000/api`
 }
 ```
 
-#### POST /api/auth/login
+<!-- #### POST /api/auth/login
 ```json
 { "email": "admin@visioncare.com", "password": "Admin@123" }
 ```
@@ -157,7 +157,7 @@ Response:
   "token": "<jwt>",
   "user": { "_id": "...", "name": "...", "role": "admin" }
 }
-```
+``` -->
 
 #### PUT /api/auth/profile
 ```json
@@ -167,7 +167,7 @@ Response:
   "avatarBase64": "data:image/jpeg;base64,..."
 }
 ```
-> Avatar saved to `uploads/avatars/user_{id}_{timestamp}.{ext}` � served at `/uploads/avatars/`.
+> Avatar saved to `uploads/avatars/user_{id}_{timestamp}.{ext}`  served at `/uploads/avatars/`.
 
 ---
 
@@ -237,12 +237,12 @@ Response:
 
 #### Visit Status Flow
 ```
-scheduled ? waiting ? in-consultation ? in-procedure ? ready-for-prescription ? completed
-                                                                                  ?
+scheduled > waiting > in-consultation > in-procedure > ready-for-prescription > completed
+                                                                                  >
                                                                               cancelled
 ```
 
-#### POST /api/visits � Create Ticket
+#### POST /api/visits  Create Ticket
 ```json
 {
   "patientId": "<ObjectId>",
@@ -351,10 +351,10 @@ _id, roomNumber, floor, roomType, assignedDoctor (ref), status
 | Event | Payload | Description |
 |---|---|---|
 | `join-doctor-room` | `doctorId` | Doctor joins personal queue room |
-| `join-receptionist` | � | Receptionist joins global room |
-| `join-waiting-room` | � | Waiting display screen connects |
+| `join-receptionist` |  | Receptionist joins global room |
+| `join-waiting-room` |  | Waiting display screen connects |
 | `toggle-availability` | `{ doctorId, isAvailable }` | Doctor broadcasts status |
-| `ping` | � | Heartbeat � server responds `pong` |
+| `ping` |  | Heartbeat  server responds `pong` |
 
 ### Server Client (real-time updates)
 | Event | Target | Trigger |
@@ -366,7 +366,7 @@ _id, roomNumber, floor, roomType, assignedDoctor (ref), status
 
 ---
 
-##  Database Seeding
+<!-- ##  Database Seeding
 
 ```bash
 npm run seed
@@ -381,14 +381,14 @@ npm run seed
 
 Test patient phones: `01711000001`, `01711000002`, `01711000003`
 
----
+--- -->
 
 ##  Security
 
 - Passwords hashed with **bcrypt** (12 salt rounds)
-- JWT � stateless, verified on every protected request
-- `helmet` � secure HTTP headers
-- `cors` � restricted to `CLIENT_URL`
+- JWT  stateless, verified on every protected request
+- `helmet`  secure HTTP headers
+- `cors`  restricted to `CLIENT_URL`
 - Role-based access enforced at route + controller level
 - Passwords excluded from all queries via `select: false`
 
@@ -398,9 +398,9 @@ Test patient phones: `01711000001`, `01711000002`, `01711000003`
 
 | Decision | Reason |
 |---|---|
-| Auto doctor assignment | Picks least-busy available doctor � reduces receptionist workload |
+| Auto doctor assignment | Picks least-busy available doctor  reduces receptionist workload |
 | Ticket number `VC-YYYYMMDD-XXXX` | Human-readable, date-scoped, unique per day |
-| `statusHistory[]` array | Every change is timestamped � enables analytics + audit trail |
-| Local avatar storage | Profile pictures in `uploads/avatars/` � no cloud service dependency |
+| `statusHistory[]` array | Every change is timestamped  enables analytics + audit trail |
+| Local avatar storage | Profile pictures in `uploads/avatars/`  no cloud service dependency |
 | DNS fallback in `db.js` | Switches to Google/Cloudflare DNS if local DNS fails Atlas SRV lookup |
-| Role-filtered `GET /visits` | Doctors see only their patients; patients only their own � no data leaks |
+| Role-filtered `GET /visits` | Doctors see only their patients; patients only their own  no data leaks |
