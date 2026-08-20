@@ -1,4 +1,4 @@
-# ?? VisionCare Backend API
+#  VisionCare Backend API
 
 > REST API + real-time WebSocket server for the VisionCare Eye Hospital Management System.
 > Built with **Node.js**, **Express**, **MongoDB (Mongoose)**, and **Socket.IO**.
